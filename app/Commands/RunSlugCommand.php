@@ -38,9 +38,12 @@ class RunSlugCommand extends Command
         }
     }
 
-    private function runSlug(?string $file = null)
+    private function runSlug(string $file = null)
     {
-        $this->info($file ?? 'No file specified');
-
+        // Make sure file is not a directory
+        if(is_dir($file)) {
+            $this->error('File is a directory');
+            return;
+        }
     }
 }
