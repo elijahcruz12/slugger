@@ -2,6 +2,7 @@
 
 namespace App\Commands;
 
+use App\Services\Slugger;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Support\Str;
 use LaravelZero\Framework\Commands\Command;
@@ -53,36 +54,22 @@ class RunSlugCommand extends Command
             return;
         }
 
-        // Get just the filename (no path, no extension)
-        $filename = pathinfo($file, PATHINFO_FILENAME);
-
-        // Get the file extension
-        $extension = pathinfo($file, PATHINFO_EXTENSION);
-
         // There may be multiple dots in the filename, so we need to slugify the filename
-        $slug = Str::slug($filename,
-            dictionary: [
-                '@' => 'at',
-                '.' => '.',
-                '_' => '-',
-                ' ' => '-',
-            ]
-        );
-
-        // If the file has an extension, append it to the slug
-        if($extension) {
-            $slug .= '.' . $extension;
-        }
-
-        $this->info($slug);
+        $slugger = new Slugger($file);
 
         if(!$this->option('dry')) {
-            // Rename the file
-            rename($file, $slug);
-            $this->info('Renamed ' . $file . ' to ' . $slug);
+            $slug = $slugger->getSlug();
+            $new_filename = Str::finish(pathinfo($file, PATHINFO_DIRNAME), '/') . $slug;
+            if($slugger->wouldOverwrite()) {
+                rename($file, $new_filename);
+                $this->info('Renamed ' . $file . ' to ' . $slug);
+            }
         }
         else {
-            $this->info('Dry run, not renaming ' . $file . ' to ' . $slug);
+            if($slugger->wouldOverwrite()) {
+                $this->warn('Would overwrite ' . $file . ' with ' . $slugger->getSlug());
+                return;
+            }
         }
     }
 }
