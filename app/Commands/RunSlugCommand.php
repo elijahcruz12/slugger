@@ -14,7 +14,7 @@ class RunSlugCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'slug:run {--all : Run on all FILES in the current directory} {--file= : Run on a specific FILE in the current directory} {--dry : Dry run}';
+    protected $signature = 'slug:run {--all : Run on all FILES in the current directory} {--file= : Run on a specific FILE in the current directory} {--allow-caps : Allow capitals to exist} {--dry : Dry run}';
 
     /**
      * The console command description.
@@ -55,7 +55,7 @@ class RunSlugCommand extends Command
         }
 
         // There may be multiple dots in the filename, so we need to slugify the filename
-        $slugger = new Slugger($file);
+        $slugger = new Slugger($file, $this->option('allow-caps'));
 
         if(!$this->option('dry')) {
             $slug = $slugger->getSlug();

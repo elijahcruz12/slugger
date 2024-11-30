@@ -10,10 +10,13 @@ class Slugger
 
     protected bool $would_overwrite = false;
 
-    public function __construct(string $name)
+    protected bool $allow_caps = false;
+
+    public function __construct(string $name, bool $allow_caps = false)
     {
         // Let's get the original filename (including extension, but no path)
         $this->original_filename = pathinfo($name, PATHINFO_BASENAME);
+        $this->allow_caps = $allow_caps;
         $this->createSlug();
     }
 
@@ -55,7 +58,9 @@ class Slugger
         $this->slug = trim($this->slug, '-');
 
         // Finally, let's make sure the slug is lowercase
-        $this->slug = strtolower($this->slug);
+        if(!$this->allow_caps){
+            $this->slug = strtolower($this->slug);
+        }
 
         // If the slug is empty, let's just use the original filename
         if(empty($this->slug)) {
