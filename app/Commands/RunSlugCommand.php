@@ -41,5 +41,6 @@ class RunSlugCommand extends Command
     private function runSlug(?string $file = null)
     {
         $this->info($file ?? 'No file specified');
+
     }
 }
