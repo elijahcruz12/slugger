@@ -1,6 +1,6 @@
 {
-    "name": "laravel-zero/laravel-zero",
-    "description": "The Laravel Zero Framework.",
+    "name": "elijahcruz12/slugger",
+    "description": "Rename files into a slug format",
     "keywords": ["framework", "laravel", "laravel zero", "console", "cli"],
     "homepage": "https://laravel-zero.com",
     "type": "project",
